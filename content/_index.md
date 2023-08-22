@@ -6,7 +6,7 @@ description: I'm a geographer with an interest in using data and quantitative me
 
 image_left: false
 images:
-- img/AdAug23_b.jpg
+- img/AdAug23_c.jpg
 show_action_link: true
 show_social_links: true
 subtitle: Professor of Urban Analytics, Bartlett Centre for Advanced Spatial Analysis (CASA), UCL
