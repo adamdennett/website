@@ -11,7 +11,7 @@ cascade:
 description: Give your projects a place to live online.
 layout: list-grid
 show_author_byline: true
-show_button_links: false
+show_button_links: true
 show_post_date: false
 show_post_thumbnail: true
 sidebar:
