@@ -1,16 +1,52 @@
 ---
-title: Test Blog Post
+title: Reference Guide for Adding Pages to this Website
 author: Adam Dennett
 date: '2023-08-22'
 slug: []
 categories:
   - Paper
-tags: []
-subtitle: ''
-excerpt: ''
+tags: [Guide]
+subtitle: 'This is hard'
+excerpt: 'Just figuring out'
 draft: yes
 series: ~
 layout: single
 ---
 
-Testing Testing
+## Important Folders
+
+As far as I can tell, there are some folders that are vital for the website to work and others that might be surplus. Vital ones include:
+
+-   R
+
+-   assets
+
+-   content
+
+-   data
+
+-   layouts
+
+-   resources
+
+-   static
+
+surplus ones *probably* include:
+
+-   archetypes
+
+-   public
+
+-   themes
+
+## Important files in the root
+
+-   config.toml - this seems to control virtually everything (but it could be a .yaml)
+
+-   netlify.toml - this is for deployment
+
+-   gitignore - for all the usual reasons.
+
+## Customising Folders
+
+Will see if I can include info about how to make some custom elements as I work it out here. Let's try the Teaching folder first.
