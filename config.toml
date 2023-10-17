@@ -31,9 +31,9 @@ enableEmoji = true
   orgName = "RStudio"
   orgLocal = "Anywhere"
   description = "A modern, beautiful, and easily configurable blog theme for Hugo."
-  favicon = "/img/favicon.ico"
-  logo = "/img/blogophonic-mark-dark.png"
-  mainSections = ["blog", "projects", "talks", "teaching"]
+  favicon = "/img/casa.ico"
+  logo = "/img/casa.png" #all in website/public/img
+  mainSections = ["blog", "project", "talk", "teaching"]
   navallcaps = true
   # show/hide social icons in site header & footer
   # configure social icons and links below in [[params.social]]
@@ -41,7 +41,7 @@ enableEmoji = true
   socialInFooter = true
   # Default image for social sharing and search engines. 
   # Place image file in `static` folder and specify image name here.
-  sharing_image = "/img/papillons.jpg"
+  sharing_image = "/img/AdAug23_c.jpg"
   # Twitter username (without @). Used when a visitor shares your site on Twitter.
   twitter = "adam_dennett"
   
@@ -127,12 +127,12 @@ enableEmoji = true
   [[menu.header]]
     name = "Research & Projects"
     title = "Research Project Portfolio"
-    url = "/projects/"
+    url = "/project/"
     weight = 3
   [[menu.header]]
     name = "Talks"
     title = "Talks"
-    url = "/talks/"
+    url = "/talk/"
     weight = 4
   [[menu.header]]
     name = "Teaching"
@@ -156,11 +156,6 @@ enableEmoji = true
     title = "Contact form"
     url = "/contact/"
     weight = 2
-  [[menu.footer]]
-    name = "Contributors"
-    title = "Contributors"
-    url = "/contributors/"
-    weight = 3
 
 # see https://gohugo.io/about/hugo-and-gdpr/    
 [privacy]
