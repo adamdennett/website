@@ -47,6 +47,6 @@ surplus ones *probably* include:
 
 -   gitignore - for all the usual reasons.
 
-## Customising Folders
+## Showing/Hiding Content in Folders
 
-Will see if I can include info about how to make some custom elements as I work it out here. Let's try the Teaching folder first.
+Thanks to Andy Mac for this little bit of golden knowledge - in order to show/hide content within any particular folder, add/remove an underscore in the index.md file. E.g. _index.md will not show the content of that file, where as index.md will. 
