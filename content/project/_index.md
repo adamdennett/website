@@ -22,7 +22,7 @@ sidebar:
   text_link_label: ""
   text_link_url: ""
   title: A Sidebar for Your Projects
-title: Research, Projects and Publications
+title: Research, Projects and Publications 
 ---
 
 ** No content for the project index. This file provides front matter for the blog including the layout and boolean options. **
