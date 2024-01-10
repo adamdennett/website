@@ -1,15 +1,15 @@
 ---
-author: Alison Hill
-categories: null
-date: "2020-12-30"
-draft: false
-excerpt: testing the excerpt field
-images: null
-layout: single
-series: null
+title: "An Rmarkdown post"
 subtitle: ""
-tags: null
-title: An Rmarkdown post
+excerpt: "testing the excerpt field"
+date: 2020-12-30
+author: "Alison Hill"
+draft: false
+images:
+series:
+tags:
+categories:
+layout: single
 ---
 
 
@@ -20,7 +20,7 @@ title: An Rmarkdown post
 with(airquality, boxplot(Temp ~ Month))
 ```
 
-<img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-1-1.png" width="672" />
+<img src="/blog/rmarkdown/_index_files/figure-html/unnamed-chunk-1-1.png" width="672" />
 
 
 
@@ -28,7 +28,7 @@ with(airquality, boxplot(Temp ~ Month))
 with(airquality, plot(Ozone ~ Temp))
 ```
 
-<img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-2-1.png" width="672" />
+<img src="/blog/rmarkdown/_index_files/figure-html/unnamed-chunk-2-1.png" width="672" />
 
 
 ```r
@@ -38,5 +38,5 @@ with(airquality, plot(Ozone ~ Temp,
                       col = mlev))
 ```
 
-<img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-3-1.png" width="672" />
+<img src="/blog/rmarkdown/_index_files/figure-html/unnamed-chunk-3-1.png" width="672" />
 
