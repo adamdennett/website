@@ -8,7 +8,7 @@ categories:
 tags: [Guide]
 subtitle: 'This is hard'
 excerpt: 'Just figuring out'
-draft: yes
+draft: no
 series: ~
 layout: single
 ---
@@ -49,4 +49,4 @@ surplus ones *probably* include:
 
 ## Showing/Hiding Content in Folders
 
-Thanks to Andy Mac for this little bit of golden knowledge - in order to show/hide content within any particular folder, add/remove an underscore in the index.md file. E.g. _index.md will not show the content of that file, where as index.md will. 
+Thanks to Andy Mac for this little bit of golden knowledge - in order to show/hide content within any particular folder, add/remove an underscore in the index.md file. E.g. \_index.md will not show the content of that file, where as index.md will.
