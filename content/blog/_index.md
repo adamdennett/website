@@ -27,7 +27,7 @@ sidebar:
   tags_link: true
   text_link_label: Subscribe via RSS
   text_link_url: /index.xml
-  title: A Sidebar for Your Thoughts
+  title: Thoughts and Musings
 thumbnail_left: true
 title: A Blog That Works
 ---
