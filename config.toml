@@ -100,13 +100,17 @@ enableEmoji = true
       icon_pack = "fab"
       url       = "https://www.instagram.com/adam_dennett"
   [[params.social]]
-      icon      = "twitter" # icon name without the 'fa-'
+      icon      = "square-x-twitter" # icon name without the 'fa-'
       icon_pack = "fab"
       url       = "https://twitter.com/adam_dennett"
   [[params.social]]
       icon      = "orcid" # icon name without the 'fa-'
       icon_pack = "ai"
       url       = "http://orcid.org/0000-0001-8036-0185"
+  [[params.social]]
+      icon      = "google-scholar" # icon name without the 'fa-'
+      icon_pack = "ai"
+      url       = "https://scholar.google.co.uk/citations?user=P_sHtmkAAAAJ&hl=en"
   
 
 [taxonomies]
