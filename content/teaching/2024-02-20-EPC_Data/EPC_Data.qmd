@@ -1,0 +1,123 @@
+---
+title: "Building Energy Performance Analysis"
+author: "Adam Dennett"
+format: html
+editor: visual
+---
+
+## Downloading EPC Data using the API
+
+The code below (translated into R from the python examples given here: <https://epc.opendatacommunities.org/docs/api/domestic>) will download all of the data for a particular local authority of interest:
+
+```{r}
+library(httr)
+library(here)
+
+# Page size (max 5000)
+query_size <- 5000
+# Output file name
+output_file <- 'mid_sussex_output_r.csv'
+
+# Base url and example query parameters
+base_url <- 'https://epc.opendatacommunities.org/api/v1/domestic/search'
+query_params <- list(size = query_size, `local-authority` = 'E07000228')
+
+# Set up authentication
+headers <- c(
+  'Accept' = 'text/csv',
+  'Authorization' = 'Basic YS5kZW5uZXR0QHVjbC5hYy51azozYTlmM2ZjM2Q2NWQxODJhZGI0Y2FiZDYwZTdjNjFkNDJmMTgzN2Q0'
+)
+
+# Keep track of whether we have made at least one request for CSV headers and search-after
+first_request <- TRUE
+# Keep track of search-after from previous request
+search_after <- NULL
+
+# Open a connection to write to the output file
+file_conn <- file(output_file, "w")
+
+# Loop over entries in query blocks of up to 5000 to write all the data into a file
+while (!is.null(search_after) || first_request) {
+  # Only set search-after if this isn't the first request
+  if (!first_request) {
+    query_params[["search-after"]] <- search_after
+  }
+  
+  # Make request
+  response <- GET(url = base_url, query = query_params, add_headers(.headers=headers))
+  response_body <- content(response, as = "text")
+  search_after <- headers(response)$`X-Next-Search-After`
+  
+  # For CSV data, only keep the header row from the first response
+  if (!first_request && response_body != "") {
+    response_body <- strsplit(response_body, "\n")[[1]][-1]
+  }
+  
+  # Write received data
+  writeLines(response_body, file_conn)
+  
+  first_request <- FALSE
+}
+
+# Close the file connection
+close(file_conn)
+```
+
+Read the CSV file back in to your environment
+
+```{r}
+library(tidyverse)
+library(usethis)
+
+epc_data <- read_csv('E:/website/mid_sussex_output_r.csv')
+```
+
+## Get UPRN Data from the OS API
+
+The osdatahub package makes this much easier to achieve.
+
+```{r}
+library(osdatahub)
+
+key <- "VExPojL0AMK9qvSwwKUc3g3DZKliugLQ"
+
+list_os_opendata()
+uprn = list_os_opendata('OpenUPRN')
+
+download_os_opendata(uprn, 
+                     file_name = 'osopenuprn_202401_csv.zip', 
+                     output_dir = tempdir())
+
+zip_file <- file.path(tempdir(), "osopenuprn_202401_csv.zip")
+csv_file <- "osopenuprn_202312.csv"
+
+# Unzip the file
+unzip(zipfile = zip_file, exdir = tempdir())
+
+# Read data from the CSV file
+uprn_data <- read.csv(file.path(tempdir(), csv_file))
+
+```
+
+Now we can join some coordinates to our EPC data to enable some mapping
+
+```{r}
+str(epc_data)
+str(uprn_data)
+
+epc_coords <- left_join(epc_data, uprn_data, by = join_by(uprn == UPRN))
+
+names(epc_coords)
+
+write_csv(epc_coords, "epc_coords.csv")
+```
+
+Now we can map it!
+
+```{r}
+library(sf)
+
+epc_sf <- st_as_sf(epc_coords, coords = c("X_COORDINATE", "Y_COORDINATE"), CRS=27700)
+
+
+```
