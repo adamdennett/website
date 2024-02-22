@@ -71,9 +71,8 @@ Read the CSV file back in to your environment
 
 ```{r}
 library(tidyverse)
-library(usethis)
 
-epc_data <- read_csv(here("content", "teaching", "2024-02-20-EPC_Data", "data", "epc_coords.csv")) %>% 
+epc_data <- read_csv(here("content", "teaching", "2024-02-20-EPC_Data", "data", "output.csv")) %>% 
   clean_names()
 ```
 
@@ -118,16 +117,30 @@ uprn_data <- read_csv(file.path(tempdir(), csv_file)) %>%
 
 ```
 
+Get some Local Authority Boundaries
+
+```{r}
+library(geojsonsf)
+library(tmap)
+
+LAD_sf <- geojson_sf("https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/Local_Authority_Districts_December_2023_Boundaries_UK_BFC/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson") 
+
+qtm(LAD_sf)
+
+Local_sf <- LAD_sf %>% filter(LAD23CD == "E07000228")
+
+qtm(Local_sf)
+```
+
 Now we can join some coordinates to our EPC data to enable some mapping
 
 ```{r}
 str(epc_data)
 str(uprn_data)
 
+#filter out all of the rows without uprns (and therefore coordinates)
 epc_coords <- left_join(epc_data, uprn_data, by = join_by(uprn == uprn)) %>% 
   filter(!is.na(uprn))
-
-names(epc_coords)
 
 write_csv(epc_coords, here("content", "teaching", "2024-02-20-EPC_Data", "data", "epc_coords.csv"))
 ```
@@ -139,6 +152,12 @@ library(sf)
 
 epc_sf <- st_as_sf(epc_coords, coords=c("x_coordinate", "y_coordinate"), crs=27700)
 
+st_crs(Local_sf)
+Local_sf <- st_transform(Local_sf, 27700)
+
+#clip it as some weird places
+epc_sf_clip <- epc_sf[Local_sf,]
+
 
 ```
 
@@ -146,5 +165,5 @@ epc_sf <- st_as_sf(epc_coords, coords=c("x_coordinate", "y_coordinate"), crs=277
 library(tmap)
 
 tmap_mode("plot")
-qtm(epc_sf)
+qtm(epc_sf_clip)
 ```
