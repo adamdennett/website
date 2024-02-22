@@ -6,3 +6,7 @@
 .httr-oauth
 .DS_Store
 .quarto
+keys.R
+img/
+output.csv
+epc_coords.csv

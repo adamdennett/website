@@ -12,11 +12,14 @@ The code below (translated into R from the python examples given here: <https://
 ```{r}
 library(httr)
 library(here)
+library(janitor)
+
+source("keys.r")
 
 # Page size (max 5000)
 query_size <- 5000
 # Output file name
-output_file <- 'mid_sussex_output_r.csv'
+output_file <- 'output.csv'
 
 # Base url and example query parameters
 base_url <- 'https://epc.opendatacommunities.org/api/v1/domestic/search'
@@ -25,7 +28,7 @@ query_params <- list(size = query_size, `local-authority` = 'E07000228')
 # Set up authentication
 headers <- c(
   'Accept' = 'text/csv',
-  'Authorization' = 'Basic YS5kZW5uZXR0QHVjbC5hYy51azozYTlmM2ZjM2Q2NWQxODJhZGI0Y2FiZDYwZTdjNjFkNDJmMTgzN2Q0'
+  'Authorization' = epc_auth
 )
 
 # Keep track of whether we have made at least one request for CSV headers and search-after
@@ -69,7 +72,8 @@ Read the CSV file back in to your environment
 library(tidyverse)
 library(usethis)
 
-epc_data <- read_csv('E:/website/mid_sussex_output_r.csv')
+epc_data <- read_csv('output.csv') %>% 
+  clean_names()
 ```
 
 ## Get UPRN Data from the OS API
@@ -78,24 +82,38 @@ The osdatahub package makes this much easier to achieve.
 
 ```{r}
 library(osdatahub)
+library(zip)
 
-key <- "VExPojL0AMK9qvSwwKUc3g3DZKliugLQ"
+#API key - although this isn't needed for the open data
+key <- os_auth
 
+#get a list of the open datasets
 list_os_opendata()
+
+#we're interested in the OpenUPRN dataset, so get all of the relevant info into an object
 uprn = list_os_opendata('OpenUPRN')
 
+#opening up the object, can see that we want the csv, which is the first entry
+uprn$fileName[1]
+
+#now we can download it:
 download_os_opendata(uprn, 
-                     file_name = 'osopenuprn_202401_csv.zip', 
+                     file_name = uprn$fileName[1], 
                      output_dir = tempdir())
 
-zip_file <- file.path(tempdir(), "osopenuprn_202401_csv.zip")
-csv_file <- "osopenuprn_202312.csv"
+#get the path to the zipfile you have just downloaded
+zip_file <- file.path(tempdir(), uprn$fileName[1])
+#find out what the name of the csv is within the zipfile
+zip_contents <- zip_list(zip_file)
+zip_contents$filename[3]
+csv_file <- zip_contents$filename[3]
 
 # Unzip the file
 unzip(zipfile = zip_file, exdir = tempdir())
 
 # Read data from the CSV file
-uprn_data <- read.csv(file.path(tempdir(), csv_file))
+uprn_data <- read_csv(file.path(tempdir(), csv_file)) %>% 
+  clean_names()
 
 ```
 
@@ -105,7 +123,8 @@ Now we can join some coordinates to our EPC data to enable some mapping
 str(epc_data)
 str(uprn_data)
 
-epc_coords <- left_join(epc_data, uprn_data, by = join_by(uprn == UPRN))
+epc_coords <- left_join(epc_data, uprn_data, by = join_by(uprn == uprn)) %>% 
+  filter(!is.na(uprn))
 
 names(epc_coords)
 
@@ -117,7 +136,14 @@ Now we can map it!
 ```{r}
 library(sf)
 
-epc_sf <- st_as_sf(epc_coords, coords = c("X_COORDINATE", "Y_COORDINATE"), CRS=27700)
+epc_sf <- st_as_sf(epc_coords, coords=c("x_coordinate", "y_coordinate"), crs=27700)
 
 
+```
+
+```{r}
+library(tmap)
+
+tmap_mode("plot")
+qtm(epc_sf)
 ```
