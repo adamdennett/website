@@ -19,7 +19,8 @@ source("keys.r")
 # Page size (max 5000)
 query_size <- 5000
 # Output file name
-output_file <- 'output.csv'
+#output_file <- 'output.csv'
+output_file <- here("content", "teaching", "2024-02-20-EPC_Data", "data", "output.csv")
 
 # Base url and example query parameters
 base_url <- 'https://epc.opendatacommunities.org/api/v1/domestic/search'
@@ -72,7 +73,7 @@ Read the CSV file back in to your environment
 library(tidyverse)
 library(usethis)
 
-epc_data <- read_csv('output.csv') %>% 
+epc_data <- read_csv(here("content", "teaching", "2024-02-20-EPC_Data", "data", "epc_coords.csv")) %>% 
   clean_names()
 ```
 
@@ -128,7 +129,7 @@ epc_coords <- left_join(epc_data, uprn_data, by = join_by(uprn == uprn)) %>%
 
 names(epc_coords)
 
-write_csv(epc_coords, "epc_coords.csv")
+write_csv(epc_coords, here("content", "teaching", "2024-02-20-EPC_Data", "data", "epc_coords.csv"))
 ```
 
 Now we can map it!
