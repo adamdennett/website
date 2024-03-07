@@ -24,6 +24,8 @@ output_file <- here("content", "teaching", "2024-02-20-EPC_Data", "data", "outpu
 
 # Base url and example query parameters
 base_url <- 'https://epc.opendatacommunities.org/api/v1/domestic/search'
+
+#this parameter specifies a particular local authority
 query_params <- list(size = query_size, `local-authority` = 'E07000228')
 
 # Set up authentication
