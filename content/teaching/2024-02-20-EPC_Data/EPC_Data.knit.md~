@@ -1,0 +1,24 @@
+---
+title: "Building Energy Performance Analysis"
+author: "Adam Dennett"
+date: "2024-02-22"
+output: html_document
+---
+
+## Downloading EPC Data using the API
+
+The code below (translated into R from the python examples given here: <https://epc.opendatacommunities.org/docs/api/domestic>) will download all of the data for a particular local authority of interest:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
