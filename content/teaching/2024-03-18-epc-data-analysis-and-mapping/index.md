@@ -15,7 +15,7 @@ links:
   - icon: door-open
     icon_pack: fas
     name: website
-    url: https://adamdennett.github.io/EPC_Data_Analysis/HousingAndNetZero.html
+    url: https://adamdennett.github.io/EPC_Analysis_Website/_site/EPCSpatialAnalysis.html
 ---
 
 This is a basic walk-through exercise which will enable participants to download Energy Performance Certificate data for a local authority of their choice and then plot the property locations and colour those properties according to variables within the dataset such as age or energy efficiency.
