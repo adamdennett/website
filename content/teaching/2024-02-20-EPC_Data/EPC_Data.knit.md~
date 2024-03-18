@@ -1,0 +1,296 @@
+---
+title: "Building Energy Performance Analysis"
+author: "Adam Dennett"
+date: "2024-02-22"
+output: html_document
+---
+
+## Downloading EPC Data using the API
+
+The code below (translated into R from the python examples given here: <https://epc.opendatacommunities.org/docs/api/domestic>) will download all of the data for a particular local authority of interest:
+
+
+```r
+library(httr)
+library(here)
+```
+
+```
+## here() starts at E:/website
+```
+
+```r
+library(janitor)
+```
+
+```
+## 
+## Attaching package: 'janitor'
+```
+
+```
+## The following objects are masked from 'package:stats':
+## 
+##     chisq.test, fisher.test
+```
+
+```r
+source("keys.r")
+
+# Page size (max 5000)
+query_size <- 5000
+# Output file name
+#output_file <- 'output.csv'
+output_file <- here("content", "teaching", "2024-02-20-EPC_Data", "data", "output.csv")
+
+# Base url and example query parameters
+base_url <- 'https://epc.opendatacommunities.org/api/v1/domestic/search'
+
+#this parameter specifies a particular local authority
+query_params <- list(size = query_size, `local-authority` = 'E07000228')
+
+# Set up authentication
+headers <- c(
+  'Accept' = 'text/csv',
+  'Authorization' = epc_auth
+)
+
+# Keep track of whether we have made at least one request for CSV headers and search-after
+first_request <- TRUE
+# Keep track of search-after from previous request
+search_after <- NULL
+
+# Open a connection to write to the output file
+file_conn <- file(output_file, "w")
+
+# Loop over entries in query blocks of up to 5000 to write all the data into a file
+while (!is.null(search_after) || first_request) {
+  # Only set search-after if this isn't the first request
+  if (!first_request) {
+    query_params[["search-after"]] <- search_after
+  }
+  
+  # Make request
+  response <- GET(url = base_url, query = query_params, add_headers(.headers=headers))
+  response_body <- content(response, as = "text")
+  search_after <- headers(response)$`X-Next-Search-After`
+  
+  # For CSV data, only keep the header row from the first response
+  if (!first_request && response_body != "") {
+    response_body <- strsplit(response_body, "\n")[[1]][-1]
+  }
+  
+  # Write received data
+  writeLines(response_body, file_conn)
+  
+  first_request <- FALSE
+}
+
+# Close the file connection
+close(file_conn)
+```
+
+Read the CSV file back in to your environment
+
+
+```r
+library(tidyverse)
+```
+
+```
+## Warning: package 'ggplot2' was built under R version 4.3.2
+```
+
+```
+## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+## ✔ dplyr     1.1.3     ✔ readr     2.1.4
+## ✔ forcats   1.0.0     ✔ stringr   1.5.0
+## ✔ ggplot2   3.4.4     ✔ tibble    3.2.1
+## ✔ lubridate 1.9.3     ✔ tidyr     1.3.0
+## ✔ purrr     1.0.2     
+## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
+## ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+```
+
+```r
+epc_data <- read_csv(here("content", "teaching", "2024-02-20-EPC_Data", "data", "output.csv")) %>% 
+  clean_names()
+```
+
+```
+## Rows: 63179 Columns: 92
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: ","
+## chr  (58): lmk-key, address1, address2, address3, postcode, building-referen...
+## dbl  (31): current-energy-efficiency, potential-energy-efficiency, environme...
+## dttm  (1): lodgement-datetime
+## date  (2): inspection-date, lodgement-date
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+```
+
+## Get UPRN Data from the OS API
+
+The osdatahub package makes this much easier to achieve.
+
+
+```r
+library(osdatahub)
+```
+
+```
+## Warning: package 'osdatahub' was built under R version 4.3.2
+```
+
+```r
+library(zip)
+```
+
+```
+## Warning: package 'zip' was built under R version 4.3.2
+```
+
+```
+## 
+## Attaching package: 'zip'
+```
+
+```
+## The following objects are masked from 'package:utils':
+## 
+##     unzip, zip
+```
+
+```r
+#API key - although this isn't needed for the open data
+key <- os_auth
+
+#get a list of the open datasets
+list_os_opendata()
+```
+
+```
+##                       id                           name
+## 1  250kScaleColourRaster 1:250 000 Scale Colour Raster™
+## 2           BoundaryLine                 Boundary-Line™
+## 3          CodePointOpen               Code-Point® Open
+## 4         GBOverviewMaps               GB Overview Maps
+## 5              MiniScale                     MiniScale®
+## 6           BuiltUpAreas         OS Open Built Up Areas
+## 7         OpenGreenspace             OS Open Greenspace
+## 8                   LIDS     OS Open Linked Identifiers
+## 9              OpenNames                  OS Open Names
+## 10            OpenRivers                 OS Open Rivers
+## 11             OpenRoads                  OS Open Roads
+## 12              OpenTOID                   OS Open TOID
+## 13              OpenUPRN                   OS Open UPRN
+## 14              OpenUSRN                   OS Open USRN
+## 15         OpenZoomstack              OS Open Zoomstack
+## 16          OpenMapLocal             OS OpenMap - Local
+## 17             Terrain50                 OS Terrain® 50
+## 18     VectorMapDistrict         OS VectorMap® District
+##                                                                                                                                                                                                 description
+## 1                                                                                                                                Get the regional view of towns and villages, roads and places of interest.
+## 2                                                                                           From Euro constituencies to council wards, Boundary-Line™ maps every administrative boundary in detail for you.
+## 3                                                                       Free and open postcode location data. Can be used for geographical analysis, simple route planning, asset management and much more.
+## 4                                                                                                                                                                   Our simplest maps of the British Isles.
+## 5                                                                                                                                                                   A simple overview map of Great Britain.
+## 6          OS Open Built Up Areas represents the built-up areas of Great Britain equal to or greater than 200,000m² or 20 hectares and they include unique names, alternative language names and GSS codes.
+## 7                                                                         Covering a range of greenspaces in urban and rural areas including playing fields, sports’ facilities, play areas and allotments.
+## 8                                                                                                                A comprehensive dataset of cross-referenced identifiers, between various OS data products.
+## 9                                                                                                                    A comprehensive dataset of place names, roads numbers and postcodes for Great Britain.
+## 10                                                                                                                                                    Understand how watercourses in Great Britain join up.
+## 11                                                                                                                              Get a high-level view of the road network, from motorways to country lanes.
+## 12 An open dataset providing access to a generalised location to key features found in OS MasterMap premium products enabling visualisation of third party data linked to their respective TOID identifier.
+## 13            An open dataset containing all the Unique Property Reference Numbers (UPRNs) found in AddressBase Premium, with their respective geometries in British National Grid and Latitude, Longitude.
+## 14        An open dataset of all Unique Street Reference Numbers (USRNs) within OS MasterMap Highways Network, with an associated simplified line geometry representing the geographic extent of each USRN.
+## 15                                                                                               A comprehensive basemap of Great Britain showing coverage from national level right down to street detail.
+## 16                                                                                                                                           Map, visualise and truly understand your data at street level.
+## 17                                                                                                                            Visualise simple landscapes in 3D and bring your geographic analysis to life.
+## 18                                                                                  District level mapping. Use the vectors to customise your perfect map or choose the raster for pre-defined cartography.
+##    version                                                           url
+## 1  2023-06 https://api.os.uk/downloads/v1/products/250kScaleColourRaster
+## 2  2023-10          https://api.os.uk/downloads/v1/products/BoundaryLine
+## 3  2024-02         https://api.os.uk/downloads/v1/products/CodePointOpen
+## 4  2014-11        https://api.os.uk/downloads/v1/products/GBOverviewMaps
+## 5  2024-01             https://api.os.uk/downloads/v1/products/MiniScale
+## 6  2022-12          https://api.os.uk/downloads/v1/products/BuiltUpAreas
+## 7  2023-10        https://api.os.uk/downloads/v1/products/OpenGreenspace
+## 8  2024-02                  https://api.os.uk/downloads/v1/products/LIDS
+## 9  2024-01             https://api.os.uk/downloads/v1/products/OpenNames
+## 10 2023-10            https://api.os.uk/downloads/v1/products/OpenRivers
+## 11 2023-10             https://api.os.uk/downloads/v1/products/OpenRoads
+## 12 2024-02              https://api.os.uk/downloads/v1/products/OpenTOID
+## 13 2024-02              https://api.os.uk/downloads/v1/products/OpenUPRN
+## 14 2024-03              https://api.os.uk/downloads/v1/products/OpenUSRN
+## 15 2023-12         https://api.os.uk/downloads/v1/products/OpenZoomstack
+## 16 2023-10          https://api.os.uk/downloads/v1/products/OpenMapLocal
+## 17 2023-07             https://api.os.uk/downloads/v1/products/Terrain50
+## 18 2023-11     https://api.os.uk/downloads/v1/products/VectorMapDistrict
+```
+
+```r
+#we're interested in the OpenUPRN dataset, so get all of the relevant info into an object
+uprn = list_os_opendata('OpenUPRN')
+
+#opening up the object, can see that we want the csv, which is the first entry
+uprn$fileName[1]
+```
+
+```
+## [1] "osopenuprn_202402_csv.zip"
+```
+
+```r
+#now we can download it:
+download_os_opendata(uprn, 
+                     file_name = uprn$fileName[1], 
+                     output_dir = tempdir())
+
+#get the path to the zipfile you have just downloaded
+zip_file <- file.path(tempdir(), uprn$fileName[1])
+#find out what the name of the csv is within the zipfile
+zip_contents <- zip_list(zip_file)
+zip_contents$filename[3]
+```
+
+```
+## [1] "osopenuprn_202402.csv"
+```
+
+```r
+csv_file <- zip_contents$filename[3]
+
+# Unzip the file
+unzip(zipfile = zip_file, exdir = tempdir())
+
+# Read data from the CSV file
+uprn_data <- read_csv(file.path(tempdir(), csv_file)) %>% 
+  clean_names()
+```
+
+```
+## Rows: 40693173 Columns: 5
+```
+
+```
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: ","
+## dbl (5): UPRN, X_COORDINATE, Y_COORDINATE, LATITUDE, LONGITUDE
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+```
+
+Get some Local Authority Boundaries
+
+
+
+
+
+
+
+
