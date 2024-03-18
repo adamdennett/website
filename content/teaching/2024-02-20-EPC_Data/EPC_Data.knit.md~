@@ -10,6 +10,7 @@ output: html_document
 The code below (translated into R from the python examples given here: <https://epc.opendatacommunities.org/docs/api/domestic>) will download all of the data for a particular local authority of interest:
 
 
+<<<<<<< HEAD
 ```r
 library(httr)
 library(here)
@@ -286,6 +287,12 @@ uprn_data <- read_csv(file.path(tempdir(), csv_file)) %>%
 ```
 
 Get some Local Authority Boundaries
+=======
+
+
+
+
+>>>>>>> 978f8a78105210e908c9615d74712181b09dba1a
 
 
 
