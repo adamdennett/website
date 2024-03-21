@@ -7,4 +7,4 @@ categories: []
 tags: []
 ---
 
-<https://adamdennett.github.io/EPC_Data_Analysis/HousingAndNetZero.html>
+[![](featured.jpg)](https://adamdennett.github.io/EPC_Data_Analysis/HousingAndNetZero.html)
