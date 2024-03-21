@@ -100,8 +100,8 @@ enableEmoji = true
       icon_pack = "fab"
       url       = "https://www.instagram.com/adam_dennett"
   [[params.social]]
-      icon      = "x-twitter" # icon name without the 'fa-'
-      icon_pack = "fas"
+      icon      = "twitter" # icon name without the 'fa-'
+      icon_pack = "fab"
       url       = "https://twitter.com/adam_dennett"
   [[params.social]]
       icon      = "orcid" # icon name without the 'fa-'
