@@ -1,4 +1,4 @@
-baseURL = "https://adamdennett.netlify.app/"
+baseURL = "https://adamdennett.co.uk/"
 theme = "hugo-apero"
 languageCode = "en"
 title = "Hugo Apéro"
