@@ -28,6 +28,13 @@ library(sf)
 library(tmap)
 
 
-"C:/Users/Adam/Documents/BrightonSecondaryCatchments.geojson"
+bh_catchments <- st_read("data/BrightonSecondaryCatchments.geojson")
+
+tmap_mode("view")
+tmap_options(check.and.fix = TRUE)
+tm_shape(bh_catchments) +
+  tm_borders() +
+  tm_fill() +
+  tm_layout(legend.position = c("left", "bottom"))
 ```
 

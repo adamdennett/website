@@ -10,7 +10,7 @@ output: html_document
 The code below (translated into R from the python examples given here: <https://epc.opendatacommunities.org/docs/api/domestic>) will download all of the data for a particular local authority of interest:
 
 
-```r
+``` r
 library(httr)
 library(here)
 ```
@@ -19,7 +19,7 @@ library(here)
 ## here() starts at E:/website
 ```
 
-```r
+``` r
 library(janitor)
 ```
 
@@ -34,7 +34,7 @@ library(janitor)
 ##     chisq.test, fisher.test
 ```
 
-```r
+``` r
 source("keys.r")
 
 # Page size (max 5000)
@@ -93,20 +93,40 @@ close(file_conn)
 Read the CSV file back in to your environment
 
 
-```r
+``` r
 library(tidyverse)
 ```
 
 ```
-## Warning: package 'ggplot2' was built under R version 4.3.2
+## Warning: package 'tidyverse' was built under R version 4.3.3
+```
+
+```
+## Warning: package 'ggplot2' was built under R version 4.3.3
+```
+
+```
+## Warning: package 'tidyr' was built under R version 4.3.3
+```
+
+```
+## Warning: package 'readr' was built under R version 4.3.3
+```
+
+```
+## Warning: package 'dplyr' was built under R version 4.3.3
+```
+
+```
+## Warning: package 'stringr' was built under R version 4.3.3
 ```
 
 ```
 ## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-## ✔ dplyr     1.1.3     ✔ readr     2.1.4
-## ✔ forcats   1.0.0     ✔ stringr   1.5.0
-## ✔ ggplot2   3.4.4     ✔ tibble    3.2.1
-## ✔ lubridate 1.9.3     ✔ tidyr     1.3.0
+## ✔ dplyr     1.1.4     ✔ readr     2.1.5
+## ✔ forcats   1.0.0     ✔ stringr   1.5.1
+## ✔ ggplot2   3.5.1     ✔ tibble    3.2.1
+## ✔ lubridate 1.9.3     ✔ tidyr     1.3.1
 ## ✔ purrr     1.0.2     
 ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter() masks stats::filter()
@@ -114,13 +134,13 @@ library(tidyverse)
 ## ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
 ```
 
-```r
+``` r
 epc_data <- read_csv(here("content", "teaching", "2024-02-20-EPC_Data", "data", "output.csv")) %>% 
   clean_names()
 ```
 
 ```
-## Rows: 63179 Columns: 92
+## Rows: 65482 Columns: 92
 ## ── Column specification ────────────────────────────────────────────────────────
 ## Delimiter: ","
 ## chr  (58): lmk-key, address1, address2, address3, postcode, building-referen...
@@ -137,7 +157,7 @@ epc_data <- read_csv(here("content", "teaching", "2024-02-20-EPC_Data", "data", 
 The osdatahub package makes this much easier to achieve.
 
 
-```r
+``` r
 library(osdatahub)
 ```
 
@@ -145,7 +165,7 @@ library(osdatahub)
 ## Warning: package 'osdatahub' was built under R version 4.3.2
 ```
 
-```r
+``` r
 library(zip)
 ```
 
@@ -164,7 +184,7 @@ library(zip)
 ##     unzip, zip
 ```
 
-```r
+``` r
 #API key - although this isn't needed for the open data
 key <- os_auth
 
@@ -173,66 +193,205 @@ list_os_opendata()
 ```
 
 ```
-##                       id                           name
-## 1  250kScaleColourRaster 1:250 000 Scale Colour Raster™
-## 2           BoundaryLine                 Boundary-Line™
-## 3          CodePointOpen               Code-Point® Open
-## 4         GBOverviewMaps               GB Overview Maps
-## 5              MiniScale                     MiniScale®
-## 6           BuiltUpAreas         OS Open Built Up Areas
-## 7         OpenGreenspace             OS Open Greenspace
-## 8                   LIDS     OS Open Linked Identifiers
-## 9              OpenNames                  OS Open Names
-## 10            OpenRivers                 OS Open Rivers
-## 11             OpenRoads                  OS Open Roads
-## 12              OpenTOID                   OS Open TOID
-## 13              OpenUPRN                   OS Open UPRN
-## 14              OpenUSRN                   OS Open USRN
-## 15         OpenZoomstack              OS Open Zoomstack
-## 16          OpenMapLocal             OS OpenMap - Local
-## 17             Terrain50                 OS Terrain® 50
-## 18     VectorMapDistrict         OS VectorMap® District
-##                                                                                                                                                                                                 description
-## 1                                                                                                                                Get the regional view of towns and villages, roads and places of interest.
-## 2                                                                                           From Euro constituencies to council wards, Boundary-Line™ maps every administrative boundary in detail for you.
-## 3                                                                       Free and open postcode location data. Can be used for geographical analysis, simple route planning, asset management and much more.
-## 4                                                                                                                                                                   Our simplest maps of the British Isles.
-## 5                                                                                                                                                                   A simple overview map of Great Britain.
-## 6          OS Open Built Up Areas represents the built-up areas of Great Britain equal to or greater than 200,000m² or 20 hectares and they include unique names, alternative language names and GSS codes.
-## 7                                                                         Covering a range of greenspaces in urban and rural areas including playing fields, sports’ facilities, play areas and allotments.
-## 8                                                                                                                A comprehensive dataset of cross-referenced identifiers, between various OS data products.
-## 9                                                                                                                    A comprehensive dataset of place names, roads numbers and postcodes for Great Britain.
-## 10                                                                                                                                                    Understand how watercourses in Great Britain join up.
-## 11                                                                                                                              Get a high-level view of the road network, from motorways to country lanes.
-## 12 An open dataset providing access to a generalised location to key features found in OS MasterMap premium products enabling visualisation of third party data linked to their respective TOID identifier.
-## 13            An open dataset containing all the Unique Property Reference Numbers (UPRNs) found in AddressBase Premium, with their respective geometries in British National Grid and Latitude, Longitude.
-## 14        An open dataset of all Unique Street Reference Numbers (USRNs) within OS MasterMap Highways Network, with an associated simplified line geometry representing the geographic extent of each USRN.
-## 15                                                                                               A comprehensive basemap of Great Britain showing coverage from national level right down to street detail.
-## 16                                                                                                                                           Map, visualise and truly understand your data at street level.
-## 17                                                                                                                            Visualise simple landscapes in 3D and bring your geographic analysis to life.
-## 18                                                                                  District level mapping. Use the vectors to customise your perfect map or choose the raster for pre-defined cartography.
-##    version                                                           url
-## 1  2023-06 https://api.os.uk/downloads/v1/products/250kScaleColourRaster
-## 2  2023-10          https://api.os.uk/downloads/v1/products/BoundaryLine
-## 3  2024-02         https://api.os.uk/downloads/v1/products/CodePointOpen
-## 4  2014-11        https://api.os.uk/downloads/v1/products/GBOverviewMaps
-## 5  2024-01             https://api.os.uk/downloads/v1/products/MiniScale
-## 6  2022-12          https://api.os.uk/downloads/v1/products/BuiltUpAreas
-## 7  2023-10        https://api.os.uk/downloads/v1/products/OpenGreenspace
-## 8  2024-02                  https://api.os.uk/downloads/v1/products/LIDS
-## 9  2024-01             https://api.os.uk/downloads/v1/products/OpenNames
-## 10 2023-10            https://api.os.uk/downloads/v1/products/OpenRivers
-## 11 2023-10             https://api.os.uk/downloads/v1/products/OpenRoads
-## 12 2024-02              https://api.os.uk/downloads/v1/products/OpenTOID
-## 13 2024-02              https://api.os.uk/downloads/v1/products/OpenUPRN
-## 14 2024-03              https://api.os.uk/downloads/v1/products/OpenUSRN
-## 15 2023-12         https://api.os.uk/downloads/v1/products/OpenZoomstack
-## 16 2023-10          https://api.os.uk/downloads/v1/products/OpenMapLocal
-## 17 2023-07             https://api.os.uk/downloads/v1/products/Terrain50
-## 18 2023-11     https://api.os.uk/downloads/v1/products/VectorMapDistrict
+##                                id
+## 1           250kScaleColourRaster
+## 2          GeoClimate_UKCP18_Open
+## 3                   GeoCoast_Open
+## 4                   GeoScour_Open
+## 5              GB-Hex-5km-GeoSure
+## 6                BGS_Geology_625k
+## 7               Hydrogeology_625k
+## 8           GB-Hex-1km-Mining-Haz
+## 9  Soil_Parent_Material_Model_1km
+## 10         Radon_Indicative_Atlas
+## 11                   BoundaryLine
+## 12                  CodePointOpen
+## 13                 GBOverviewMaps
+## 14                      MiniScale
+## 15                   BuiltUpAreas
+## 16                 OpenGreenspace
+## 17                           LIDS
+## 18                      OpenNames
+## 19                     OpenRivers
+## 20                      OpenRoads
+## 21                       OpenTOID
+## 22                       OpenUPRN
+## 23                       OpenUSRN
+## 24                  OpenZoomstack
+## 25                   OpenMapLocal
+## 26                      Terrain50
+## 27              VectorMapDistrict
+##                                                           name
+## 1                               1:250 000 Scale Colour Raster™
+## 2                                   BGS GeoClimate UKCP18 Open
+## 3                                            BGS GeoCoast Open
+## 4                                            BGS GeoScour Open
+## 5                                    BGS GeoSure 5 km hex grid
+## 6                                             BGS Geology 625K
+## 7  BGS Hydrogeology 625k digital hydrogeological map of the UK
+## 8         BGS Mining hazard (not including coal) 1 km hex grid
+## 9                               BGS Soil Parent Material Model
+## 10             BGS/UKHSA Radon data: Indicative Atlas of Radon
+## 11                                              Boundary-Line™
+## 12                                            Code-Point® Open
+## 13                                            GB Overview Maps
+## 14                                                  MiniScale®
+## 15                                      OS Open Built Up Areas
+## 16                                          OS Open Greenspace
+## 17                                  OS Open Linked Identifiers
+## 18                                               OS Open Names
+## 19                                              OS Open Rivers
+## 20                                               OS Open Roads
+## 21                                                OS Open TOID
+## 22                                                OS Open UPRN
+## 23                                                OS Open USRN
+## 24                                           OS Open Zoomstack
+## 25                                          OS OpenMap - Local
+## 26                                              OS Terrain® 50
+## 27                                      OS VectorMap® District
+##                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         description
+## 1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        Get the regional view of towns and villages, roads and places of interest.
+## 2                                                                                                                                                                                                                                                                                                                                                                                                             The BGS GeoClimate: shrink–swell national datasets show potential change in subsidence due to changes in climate. They have been developed by combining long-term UK Climate Projection (UKCP) scenarios for rainfall and temperature changes with the geotechnical properties of the ground, to identify areas projected to experience the largest increases in susceptibility to subsidence over the next century., GeoClimate UKCP18 Open is provided for two time periods, 2030s and 2070s, with one projection provided for each time period based on the average outcome for the UKCP18 higher emissions scenario and the most susceptible GeoSure value (worst case) within the grid cell., Further investigation can be carried out using BGS GeoClimate UKCP18 premium data.
+## 3                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  BGS GeoCoast Open contains a detailed suite of statistical data based on the underlying datasets (GeoCoast Premium). These include, for example, percentage of county at threat from inundation and percentage of county coastline with high susceptibility to erosion. In addition, there is a tool to compare or share best practise at a regional scale and streamline the consideration of multiple underlying datasets through a simple, high-level scheme, presented as domains., GeoCoast Open consists of: regional statistics (shapefiles); coastal domains for erosion and morphology.
+## 4                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              The BGS GeoScour Open datasets provide a generalised overview of the natural characteristics and properties of catchment and riverine environments for the assessment of river scour in Great Britain., The GeoScour Open dataset comprises two different tiers of geographical information system data containing seven different data layers. Each tier represents a different scale of assessment, from a high-level catchment to subcatchment data. The datasets are polygon (area) layers, which are described using straightforward classifications and enabling an indicative catchment susceptibility assessment., Further investigation can be carried out using BGS GeoScour premium data.
+## 5                                                                                                                                                                                                                                                                                                                                                   The BGS GeoSure 5 km hex grid datasets provide a generalised overview of the susceptibility to six naturally occurring geohazards in Great Britain. The hexagon grid provides a national-scale summary of the GeoSure data product. The detailed GeoSure dataset is also available to licence and provides further detail at a scale of 1:50 000., The 5 km hex grid data has been generalised into a vector map of interlocking hexagon cells (a side length of 5 km), with an area approximately 65 km² . There are three classes included within the data: low, moderate and significant., The six BGS GeoSure data layers provided are: collapsible deposits, compressible ground, landslides, running sand, shrink–swell and soluble rocks., Further investigation can be carried out using BGS GeoSure premium data for each hazard type.
+## 6                                                                                                                                                                                                                                                                                                                                                                                                                            Generalised digital geological map data based on BGS’ published poster maps of the UK (north and south). Bedrock-related themes were created by generalisation of 1:50 000 data to make the 2007 fifth edition bedrock geology map., The geological areas (or polygons) are labelled or attributed with a name based on their lithostratographical, chronostratographical or lithodemic nomenclature and their composition (rock type or lithology). Faults and other linear features are available in a separate theme., Geology maps are the foundation for many other types of earth science-related maps and are of potential use to a wide range of customers. This dataset uses the themes: (i) bedrock geology; (ii) dykes; and (iii) linear (faults) features.
+## 7                                                                                                                                                                                                                                                                                                                                                                                                                              The BGS hydrogeological map indicates aquifer potential in generalised terms using a threefold division of geological formations: (i) those in which intergranular flow in the saturated zone is dominant; (ii) those in which flow is controlled by fissures or discontinuities; and (iii) less permeable formations including aquifers concealed at depth beneath covering layers., Highly productive aquifers are distinguished from those that are only of local importance or have no significant groundwater. Within each of these classes the strata are grouped together according to age or lithology., The 1:625 000-scale data may be used as a guide to the aquifers at a regional or national level, but should not be relied on for local information.
+## 8  The BGS mining hazard (not including coal) 1 km hex grid dataset provides a generalised overview of the likelihood for mining to have occurred. It provides a national-scale summary of the presence of mining and an indication of the level of hazard associated with old workings., The data has been generalised into a vector map of interlocking hexagon cells, side length 1 km, area approximately 2.6 km², There are four classes included within the data: (i) low: localised, small-scale mining may have occurred in the area; (ii) moderate: small-scale, underground mining may have occurred in the area; (iii) significant: underground mining is known or considered likely to have occurred in the area; and (iv) NA: no record of activity., The data has been generalised from the BGS mining hazard (not including coal) dataset. This additional, detailed dataset is also available to licence and provides further detail as well as information on the type of commodity extracted, mine names and any additional details where available, at a scale of 1:50 000., Further investigation can be carried out using BGS Mining Hazard (not including Coal) premium data.
+## 9                                                                                                                                                                                                   Soils are the result of weathering processes that occur on the Earth’s surface where the atmosphere meets the geosphere and hydrosphere. We live in this ‘critical zone’, relying on our soils to grow our food and sustain the biodiversity and health of our environment., A ‘parent material’ is a soil-science name for a weathered rock or deposit from and within which a soil has formed. In Great Britain, parent materials provide the basic foundations and building blocks of the soil, influencing their texture, structure, drainage and chemistry., The Soil Parent Material Model details the distribution of physiochemical properties of the weathered and unweathered parent materials of Great Britain to: (i) facilitate spatial mapping of soil properties Great Britain; (ii) identify soils and landscapes sensitive to erosion; (iii) provide a national overview of our soil resource; and (iv) develop a better understanding of weathering properties and processes.
+## 10                                                                                                                                                                                                                                                                         The joint UK Health Security Agency (UKHSA)-BGS Indicative Atlas of Radon in the United Kingdom presents an overview of the results of detailed mapping of radon potential (defined as the estimated percentage of homes in an area above the radon action level)., The Radon potential dataset for the United Kingdom provides the current definitive map of radon-affected areas in the United Kingdom. This data presents a simplified version of the radon potential dataset with each 1 km-grid square being classed according to the highest radon potential found within it, so is indicative rather than definitive., UKHSA recommends that radon levels should be reduced in homes where the annual average is at or above 200 becquerels per cubic metre (200 Bq/m³ ) — this is termed the radon action level., Further investigation can be carried out using the detailed BGS/UKHSA Radon Potential dataset.
+## 11                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  From Euro constituencies to council wards, Boundary-Line™ maps every administrative boundary in detail for you.
+## 12                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              Free and open postcode location data. Can be used for geographical analysis, simple route planning, asset management and much more.
+## 13                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          Our simplest maps of the British Isles.
+## 14                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          A simple overview map of Great Britain.
+## 15                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 OS Open Built Up Areas represents the built-up areas of Great Britain equal to or greater than 200,000m² or 20 hectares and they include unique names, alternative language names and GSS codes.
+## 16                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                Covering a range of greenspaces in urban and rural areas including playing fields, sports’ facilities, play areas and allotments.
+## 17                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       A comprehensive dataset of cross-referenced identifiers, between various OS data products.
+## 18                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           A comprehensive dataset of place names, roads numbers and postcodes for Great Britain.
+## 19                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            Understand how watercourses in Great Britain join up.
+## 20                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      Get a high-level view of the road network, from motorways to country lanes.
+## 21                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         An open dataset providing access to a generalised location to key features found in OS MasterMap premium products enabling visualisation of third party data linked to their respective TOID identifier.
+## 22                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    An open dataset containing all the Unique Property Reference Numbers (UPRNs) found in AddressBase Premium, with their respective geometries in British National Grid and Latitude, Longitude.
+## 23                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                An open dataset of all Unique Street Reference Numbers (USRNs) within OS MasterMap Highways Network, with an associated simplified line geometry representing the geographic extent of each USRN.
+## 24                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       A comprehensive basemap of Great Britain showing coverage from national level right down to street detail.
+## 25                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   Map, visualise and truly understand your data at street level.
+## 26                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    Visualise simple landscapes in 3D and bring your geographic analysis to life.
+## 27                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          District level mapping. Use the vectors to customise your perfect map or choose the raster for pre-defined cartography.
+##                           version
+## 1                         2024-06
+## 2                       Version 1
+## 3                       Version 1
+## 4                       Version 2
+## 5                       Version 8
+## 6                       Version 5
+## 7                       Version 5
+## 8                       Version 8
+## 9                       Version 6
+## 10 Version 3 (GB); Version 1 (NI)
+## 11                        2024-10
+## 12                        2024-08
+## 13                        2014-11
+## 14                        2024-01
+## 15                        2024-04
+## 16                        2024-10
+## 17                        2024-09
+## 18                        2024-07
+## 19                        2024-10
+## 20                        2024-10
+## 21                        2024-09
+## 22                        2024-09
+## 23                        2024-10
+## 24                        2024-06
+## 25                        2024-10
+## 26                        2024-07
+## 27                        2024-05
+##                                                                       url
+## 1           https://api.os.uk/downloads/v1/products/250kScaleColourRaster
+## 2          https://api.os.uk/downloads/v1/products/GeoClimate_UKCP18_Open
+## 3                   https://api.os.uk/downloads/v1/products/GeoCoast_Open
+## 4                   https://api.os.uk/downloads/v1/products/GeoScour_Open
+## 5              https://api.os.uk/downloads/v1/products/GB-Hex-5km-GeoSure
+## 6                https://api.os.uk/downloads/v1/products/BGS_Geology_625k
+## 7               https://api.os.uk/downloads/v1/products/Hydrogeology_625k
+## 8           https://api.os.uk/downloads/v1/products/GB-Hex-1km-Mining-Haz
+## 9  https://api.os.uk/downloads/v1/products/Soil_Parent_Material_Model_1km
+## 10         https://api.os.uk/downloads/v1/products/Radon_Indicative_Atlas
+## 11                   https://api.os.uk/downloads/v1/products/BoundaryLine
+## 12                  https://api.os.uk/downloads/v1/products/CodePointOpen
+## 13                 https://api.os.uk/downloads/v1/products/GBOverviewMaps
+## 14                      https://api.os.uk/downloads/v1/products/MiniScale
+## 15                   https://api.os.uk/downloads/v1/products/BuiltUpAreas
+## 16                 https://api.os.uk/downloads/v1/products/OpenGreenspace
+## 17                           https://api.os.uk/downloads/v1/products/LIDS
+## 18                      https://api.os.uk/downloads/v1/products/OpenNames
+## 19                     https://api.os.uk/downloads/v1/products/OpenRivers
+## 20                      https://api.os.uk/downloads/v1/products/OpenRoads
+## 21                       https://api.os.uk/downloads/v1/products/OpenTOID
+## 22                       https://api.os.uk/downloads/v1/products/OpenUPRN
+## 23                       https://api.os.uk/downloads/v1/products/OpenUSRN
+## 24                  https://api.os.uk/downloads/v1/products/OpenZoomstack
+## 25                   https://api.os.uk/downloads/v1/products/OpenMapLocal
+## 26                      https://api.os.uk/downloads/v1/products/Terrain50
+## 27              https://api.os.uk/downloads/v1/products/VectorMapDistrict
+##    thirdPartyInfo.dataProvider.name thirdPartyInfo.dataProvider.shortName
+## 1                              <NA>                                  <NA>
+## 2         British Geological Survey                                   BGS
+## 3         British Geological Survey                                   BGS
+## 4         British Geological Survey                                   BGS
+## 5         British Geological Survey                                   BGS
+## 6         British Geological Survey                                   BGS
+## 7         British Geological Survey                                   BGS
+## 8         British Geological Survey                                   BGS
+## 9         British Geological Survey                                   BGS
+## 10        British Geological Survey                                   BGS
+## 11                             <NA>                                  <NA>
+## 12                             <NA>                                  <NA>
+## 13                             <NA>                                  <NA>
+## 14                             <NA>                                  <NA>
+## 15                             <NA>                                  <NA>
+## 16                             <NA>                                  <NA>
+## 17                             <NA>                                  <NA>
+## 18                             <NA>                                  <NA>
+## 19                             <NA>                                  <NA>
+## 20                             <NA>                                  <NA>
+## 21                             <NA>                                  <NA>
+## 22                             <NA>                                  <NA>
+## 23                             <NA>                                  <NA>
+## 24                             <NA>                                  <NA>
+## 25                             <NA>                                  <NA>
+## 26                             <NA>                                  <NA>
+## 27                             <NA>                                  <NA>
+##    thirdPartyInfo.dataProvider.homepage
+## 1                                  <NA>
+## 2                https://www.bgs.ac.uk/
+## 3                https://www.bgs.ac.uk/
+## 4                https://www.bgs.ac.uk/
+## 5                https://www.bgs.ac.uk/
+## 6                https://www.bgs.ac.uk/
+## 7                https://www.bgs.ac.uk/
+## 8                https://www.bgs.ac.uk/
+## 9                https://www.bgs.ac.uk/
+## 10               https://www.bgs.ac.uk/
+## 11                                 <NA>
+## 12                                 <NA>
+## 13                                 <NA>
+## 14                                 <NA>
+## 15                                 <NA>
+## 16                                 <NA>
+## 17                                 <NA>
+## 18                                 <NA>
+## 19                                 <NA>
+## 20                                 <NA>
+## 21                                 <NA>
+## 22                                 <NA>
+## 23                                 <NA>
+## 24                                 <NA>
+## 25                                 <NA>
+## 26                                 <NA>
+## 27                                 <NA>
 ```
 
-```r
+``` r
 #we're interested in the OpenUPRN dataset, so get all of the relevant info into an object
 uprn = list_os_opendata('OpenUPRN')
 
@@ -241,10 +400,10 @@ uprn$fileName[1]
 ```
 
 ```
-## [1] "osopenuprn_202402_csv.zip"
+## [1] "osopenuprn_202409_csv.zip"
 ```
 
-```r
+``` r
 #now we can download it:
 download_os_opendata(uprn, 
                      file_name = uprn$fileName[1], 
@@ -258,10 +417,10 @@ zip_contents$filename[3]
 ```
 
 ```
-## [1] "osopenuprn_202402.csv"
+## [1] "osopenuprn_202409.csv"
 ```
 
-```r
+``` r
 csv_file <- zip_contents$filename[3]
 
 # Unzip the file
@@ -273,7 +432,7 @@ uprn_data <- read_csv(file.path(tempdir(), csv_file)) %>%
 ```
 
 ```
-## Rows: 40693173 Columns: 5
+## Rows: 40909714 Columns: 5
 ```
 
 ```

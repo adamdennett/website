@@ -1,0 +1,13 @@
+name: website
+title: website
+username: adam-dennett
+account: adam-dennett
+server: posit.cloud
+hostUrl: https://api.posit.cloud/v1
+appId: 8908834
+bundleId: 9178822
+url: https://posit.cloud/content/8908834
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: .hugo_build.lock|.Rprofile|config.toml|data/ads/formspree.yaml|index.Rmd|layouts/shortcodes/blogdown/postref.html|netlify.toml|R/build.R|R/build2.R|README.md|resources/_gen/assets/scss/scaffold.scss_6f331e6a54e75a33bf220c2f8026e136.content|resources/_gen/assets/scss/scaffold.scss_6f331e6a54e75a33bf220c2f8026e136.json|static/blog/rmarkdown/_index_files/figure-html/unnamed-chunk-1-1.png|static/blog/rmarkdown/_index_files/figure-html/unnamed-chunk-2-1.png|static/blog/rmarkdown/_index_files/figure-html/unnamed-chunk-3-1.png|static/img/AdAug23_c.jpg|static/img/MeCrop.jpg|assets|public|themes
